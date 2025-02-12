@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: pink;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 1s ease;
+        }
+
+        .gif-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            animation: fadeIn 2s ease-in;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.5s ease, opacity 0.5s ease, background-color 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .yes-btn {
+            background-color: green;
+            color: white;
+        }
+
+        .no-btn {
+            background-color: red;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .question {
+            font-size: 24px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+
+        .no-btn:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        .full-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background-color: pink;
+            z-index: 999;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        /* Full-screen Yes button styles */
+        .yes-btn.full-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            font-size: 5rem;
+            border-radius: 0;
+            padding: 0;
+            background-color: green;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0f0, 0 0 20px #0f0;
+            animation: shine 2s infinite alternate;
+        }
+
+        /* Shine animation for text */
+        @keyframes shine {
+            0% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0f0, 0 0 20px #0f0;
+            }
+            100% {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0f0, 0 0 40px #0f0;
+            }
+        }
+
+        /* Animation Effects */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.1); }
+            50% { transform: scale(0.9); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        button:hover {
+            background-color: #28a745;
+            transform: scale(1.1);
+        }
+
+        .yes-btn:active, .no-btn:active {
+            animation: bounce 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gif-container">
+        <img id="initialGif" src="https://media.giphy.com/media/tpVKvAabWt3G5csMkT/giphy.gif" alt="Frog">
+    </div>
+
+    <div class="question">Will you be my Valentine?</div>
+
+    <div class="buttons">
+        <button id="yesBtn" class="yes-btn">Yes</button>
+        <button id="noBtn" class="no-btn">No</button>
+    </div>
+
+    <div id="followUpQuestion" class="hidden">
+        <div class="question" id="followUpText">Saxi vaneko ni</div>
+    </div>
+
+    <script>
+        let yesButton = document.getElementById('yesBtn');
+        let noButton = document.getElementById('noBtn');
+        let followUpQuestion = document.getElementById('followUpQuestion');
+        let followUpText = document.getElementById('followUpText');
+        let initialGif = document.getElementById('initialGif');
+        let body = document.body;
+
+        let yesCount = 0;
+        let noCount = 0;
+
+        // Sound effects (replace with your own sound files if needed)
+        const clickSound = new Audio('https://www.soundjay.com/button/beep-07.wav'); // "No" button click sound
+        const yesSound = new Audio('https://www.soundjay.com/button/beep-10.wav'); // "Yes" button click sound
+        const sadSound = new Audio('https://www.soundjay.com/button/beep-06.wav'); // Sad "No" response sound
+
+        noButton.addEventListener('click', function () {
+            clickSound.play(); // Play sound when clicked
+            // Increase the size of the Yes button when No is clicked
+            yesButton.style.transform = `scale(${1.2 + (noCount * 0.2)})`;
+
+            if (noCount === 0) {
+                followUpText.innerText = "Are you sure you don't want to be my Valentine?";
+            } else if (noCount === 1) {
+                followUpText.innerText = "Isn't my Valentine proposal too good to resist?";
+            } else if (noCount === 2) {
+                followUpText.innerText = "Do you really want to be the person who says No?";
+            } else if (noCount === 3) {
+                followUpText.innerText = "Is it because I said 'be mine' that you're saying no?";
+            } else if (noCount === 4) {
+                followUpText.innerText = "I swear I have chocolates... You want chocolates, right?";
+            } else if (noCount === 5) {
+                followUpText.innerText = "Do you like frogs? I can show you more frogs.";
+            } else if (noCount === 6) {
+                followUpText.innerText = "I promise I'll share my pizza with you... Please say Yes?";
+            } else if (noCount === 7) {
+                followUpText.innerText = "How many times do I have to say 'Please'? 😢";
+            } else if (noCount === 8) {
+                followUpText.innerText = "You don't want to be my Valentine, but you’ll still have to talk to me!";
+            } else if (noCount === 9) {
+                followUpText.innerText = "Are you really going to leave me hanging like this?";
+            } else if (noCount === 10) {
+                followUpText.innerText = "You do realize you just made me sad, right?";
+            } else if (noCount === 11) {
+                followUpText.innerText = "Are you playing hard to get?";
+            } else if (noCount === 12) {
+                followUpText.innerText = "Is it because I don't have a bouquet of roses?";
+            } else if (noCount === 13) {
+                followUpText.innerText = "You're breaking my heart with every 'No'.";
+            } else if (noCount === 14) {
+                followUpText.innerText = "C'mon... you know you want to say yes!";
+            } else if (noCount >= 15) {
+                // After the 15th click, hide the No button and display the final gif
+                noButton.disabled = true;
+                followUpText.innerText = "Please say Yes...";
+                initialGif.src = "https://media.giphy.com/media/EQUQdq1Mr94PUJtANv/giphy.gif"; // Final gif
+                yesButton.style.transform = "scale(5)"; // Make the Yes button full screen
+                sadSound.play(); // Play sad sound after 15 clicks
+            }
+
+            followUpQuestion.classList.remove('hidden');
+            noCount++;
+        });
+
+        yesButton.addEventListener('click', function () {
+            if (noCount >= 15) {
+                yesSound.play(); // Play sound when clicked
+                yesButton.classList.add('full-screen'); // Make Yes button full screen
+                yesButton.innerText = "ohh hooo😏 u love huh 😏😏😏🥵"; // Display final message in Yes button
+                noButton.style.display = 'none'; // Hide the No button
+            }
+        });
+    </script>
+
+</body>
+</html>
